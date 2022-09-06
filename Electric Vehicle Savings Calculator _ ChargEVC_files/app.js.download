@@ -1,0 +1,220 @@
+/* ==========================================================================
+   Author: splendorgraphics.com
+   ========================================================================== */
+$(function() {
+	
+	$("#top").sticky({topSpacing:0, zIndex: 999});
+	$('iframe[src*="vimeo"]').parent().fitVids();
+	
+	$('#slider .slide').each(function(){
+		var bg = $('img', this).attr('src');
+		if(bg) {
+			$(this).css('background-image', 'url('+bg+')');
+		}
+	});
+	$('#slider').on('cycle-initialized', function (e, opts) {
+      if (opts.slideCount <= 1) {
+          $(".cycle-next").css("opacity", 0);
+      }
+  });
+	
+	$('#banner').each(function(){
+		var bg = $('img', this).attr('src');
+		if(bg) {
+			$(this).css('background-image', 'url('+bg+')');
+		}
+	});
+	
+	$('#resources').each(function(){
+		var bg = $('.bg', this).attr('src');
+		if(bg) {
+			$(this).css('background-image', 'url('+bg+')');
+		}
+	});
+	
+	$('.img-holder').imageScroll();
+	
+	$('#nav ul li').each(function(){
+		if($(this).has("ul").length) {
+			$(this).addClass('sub');
+		}
+	});
+	
+	$('#bottom .widget').matchHeight();
+	$('#about ul li').matchHeight();
+	$('#resources ul li').matchHeight();
+	
+	if ($('#tweets').length != 0) {
+	
+		var configProfile = {
+  "profile": {"screenName": 'ChargevcNJ'},
+  "domId": 'tweets',
+  "maxTweets": 1,
+  "enableLinks": true, 
+  "showUser": false,
+  "showTime": true,
+  "showImages": false,
+  "lang": 'en'
+};
+twitterFetcher.fetch(configProfile);
+	}
+	
+	var config = {    
+		sensitivity: 9, // number = sensitivity threshold (must be 1 or higher)    
+		interval: 200,  // number = milliseconds for onMouseOver polling interval    
+		over: doOpen,   // function = onMouseOver callback (REQUIRED)    
+		timeout: 200,   // number = milliseconds delay before onMouseOut    
+		out: doClose    // function = onMouseOut callback (REQUIRED)    
+  };	
+	function doOpen() {
+		$('a:first', this).addClass("hover");
+		$('ul:first',this).slideToggle();
+	}
+	function doClose() {
+		$('a:first', this).removeClass("hover");
+		$('ul:first',this).slideToggle();
+	}
+	$("#nav ul li").hoverIntent(config);
+	
+	$('.menu-toggle').click(function() {
+		var target = $(this).attr('href');
+		$('nav', target).slideToggle();
+		return false;
+	});
+	
+	$('#mobile-nav nav ul li').each(function(){
+		if($(this).children('ul').length > 0) {
+			$(this).prepend('<em></em>');
+		}
+	});
+	$('#mobile-nav ul li em').click(function(){
+		$(this).toggleClass('active');
+		$(this).parent().children('ul').slideToggle();
+	});
+	
+	
+});
+
+  
+ $('#slider').on( 'cycle-initialized', function( e, opts ) {
+    if ( opts.slideCount <= 1 ) {
+    	$('#slider .prev').hide();
+    	$('#slider .next').hide();
+    }
+});
+
+$(".how-to-join-btn").click(function() {
+$(this).hide();
+$(".join-options").slideDown();
+});
+
+$("body").on("click", ".btn-view-gallery", function() {
+$("body").addClass("modal-open");
+var url = $(this).attr("data-url");
+$(".large-gallery-modal").append("<img src='"+url+"'>");
+$(".large-gallery-modal").fadeIn();
+});
+
+$(".close-modal").click(function() {
+$("body").removeClass("modal-open");
+$(".large-gallery-modal").hide();
+$(".large-gallery-modal img").remove();	
+});
+
+function resizeInput() {
+$(this).attr('size', $(this).val().length);
+}
+
+$('input[type="text"]').keyup(resizeInput).each(resizeInput);
+
+$('.initialMiles').focus(function() {
+$(this).val("");    
+});
+
+$('body').on("keyup", ".initialMiles", function() {
+var milesPerDayWeekday = $(".milesPerDayWeekday").val();
+var milesPerDayWeekend = $(".milesPerDayWeekend").val();
+    
+var milesPerWeekWeekday = milesPerDayWeekday * 5;
+var milesPerWeekWeekend = milesPerDayWeekend * 2;
+    
+var milesPerWeekTotal = milesPerWeekWeekday + milesPerWeekWeekend;
+var milesPerYear = milesPerWeekTotal * 52;
+    
+if (milesPerDayWeekday || milesPerDayWeekend) {
+$(".milesPerYearGas").html(milesPerYear);
+$(".milesPerYearElectric").html(milesPerYear);
+    
+jQuery('.initPerYear').each(function() {
+var theCount = $(this).html().replace(/,/g , "");
+jQuery(this).prop('Counter', 0).animate({
+Counter: theCount
+}, {
+duration: 1000,
+easing: 'swing',
+step: function(now) {
+$(this).html(Math.ceil(now).toLocaleString('en'));
+}
+});
+});
+}
+});
+
+function runCalculator() {
+var milesPerDayWeekday = $(".milesPerDayWeekday").val();
+var milesPerDayWeekend = $(".milesPerDayWeekend").val();
+    
+var milesPerWeekWeekday = milesPerDayWeekday * 5;
+var milesPerWeekWeekend = milesPerDayWeekend * 2;
+    
+var milesPerWeekTotal = milesPerWeekWeekday + milesPerWeekWeekend;
+var milesPerYear = milesPerWeekTotal * 52;
+
+//Gas side
+var milesPerGallonGas = $(".milesPerGallonGas").val();
+var gallonsPerYear = milesPerYear / milesPerGallonGas;
+var gasCostPerGallon = $(".gasCostPerGallon").val();
+var GasCostPerYear = gallonsPerYear * gasCostPerGallon;
+var costPerMileGas = gasCostPerGallon / milesPerGallonGas; 
+
+$(".milesPerYearGas").html(milesPerYear);
+$(".gasGallonsUsed").html(gallonsPerYear);
+$(".gasCostPerYear").html(GasCostPerYear);
+$(".costPerGasMile").html(costPerMileGas.toFixed(2));
+    
+//Electric Side
+var milesPerKwhrElectric = $(".milesPerKwhrElectric").val();
+var costPerKwhr = $(".costPerKwhr").val();
+var kilwattHoursUsedPerYear = milesPerYear / milesPerKwhrElectric;
+var ElectricCostPerYear = kilwattHoursUsedPerYear * costPerKwhr;
+var costPerMileElectric = costPerKwhr / milesPerKwhrElectric;
+
+$(".milesPerYearElectric").html(milesPerYear);
+$(".kilowattHoursUsed").html(kilwattHoursUsedPerYear);
+$(".electricCostPerYear").html(ElectricCostPerYear);
+$(".costPerElectricMile").html(costPerMileElectric.toFixed(2));
+    
+var totalSavings = GasCostPerYear - ElectricCostPerYear;
+    
+$(".totalSavings").html(totalSavings);
+    
+jQuery('.count').each(function() {
+var theCount = $(this).html().replace(/,/g , "");
+jQuery(this).prop('Counter', 0).animate({
+Counter: theCount
+}, {
+duration: 1000,
+easing: 'swing',
+step: function(now) {
+$(this).html(Math.ceil(now).toLocaleString('en'));
+}
+});
+});
+    
+} 
+
+$(".crunchThemNumbers").click(function() {
+runCalculator(); 
+});
+
+runCalculator();
